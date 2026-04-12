@@ -1,0 +1,255 @@
+:root {
+    --bg-dark: #2a2522;
+    --gold: #d4af37;
+    --red-dark: #4a0e0e;
+    --green-dark: #1f3622;
+    --text-light: #fefee2;
+    --glass-bg: rgba(42, 37, 34, 0.85);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Serif SC', serif;
+    background: linear-gradient(180deg, #443c33 0%, #2f2a24 100%);
+    color: var(--text-light);
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.screen {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.full-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: url('data:image/svg+xml;utf8,<svg opacity="0.05" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23fff"/></svg>') no-repeat center center;
+    background-size: cover;
+}
+
+.hidden { display: none !important; }
+
+/* Modal & Menus */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: var(--gold);
+    color: #000;
+    margin: 5px;
+    transition: transform 0.1s;
+}
+.btn:active { transform: scale(0.95); }
+.danger-btn { background: #e63946; color: white; }
+
+/* Info bars */
+.info-sidebar {
+    background: linear-gradient(90deg, #111, var(--red-dark), #111);
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.bottom-bar { background: linear-gradient(90deg, #111, var(--green-dark), #111); }
+
+.info-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+.info-item { display: inline-block; }
+.highlight-turn { color: var(--gold); font-weight: bold; }
+
+.desktop-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+@media (min-width: 800px) {
+    .desktop-row {
+        flex-direction: row;
+        align-items: stretch;
+        margin: 15px 0;
+    }
+    
+    .info-sidebar {
+        width: 140px;
+        flex-shrink: 0;
+        border-top: none;
+        border-bottom: none;
+        border-right: 2px solid var(--gold);
+        border-radius: 8px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+    
+    .info-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .collected-area {
+        flex: 1;
+        margin-top: 0;
+        padding-left: 20px;
+    }
+    
+    .my-cards .card {
+        width: 60px;
+        height: 90px;
+    }
+    .fanned-cards {
+        gap: 6px;
+    }
+}
+
+/* Card styles */
+.card {
+    width: 60px;
+    height: 90px;
+    background-color: #000;
+    border-radius: 4px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    border: 2px solid #333;
+    transition: 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+}
+
+.card.highlight-match {
+    box-shadow: 0 0 15px 4px var(--gold);
+    border-color: var(--gold);
+    transform: translateY(-8px) scale(1.05) !important;
+    z-index: 20 !important;
+}
+
+.card.dimmed {
+    filter: brightness(0.3);
+    pointer-events: none;
+}
+
+/* Fanned Hands (now Flat) */
+.opp-hand-container, .my-hand-container {
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+}
+.opp-hand-container { margin-top: 5px; }
+.my-hand-container { margin-bottom: 20px; }
+
+.fanned-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    position: relative;
+}
+
+.my-cards .card {
+    width: 53px;
+    height: 79.5px;
+}
+
+/* Collected Cards */
+.collected-area {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding: 0 10px;
+    margin-top: 15px;
+}
+.collected-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 24%;
+}
+.col-title {
+    font-size: 12px;
+    background: #000;
+    color: var(--gold);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--gold);
+    margin-bottom: 4px;
+    z-index: 5;
+}
+.col-cards {
+    position: relative;
+    height: 180px; /* adjusted for up to 5 cards vertical overlap */
+    width: 60px;
+}
+.col-card-wrapper {
+    position: absolute;
+}
+.col-card-wrapper .card {
+    width: 55px;
+    height: 82.5px;
+    border: 1px solid #111;
+}
+
+/* Field */
+.field-area-wrapper {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.field-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 10px;
+    width: 90%;
+}
+
+/* Overlays */
+.modal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+.modal-content {
+    width: 80%;
+    text-align: center;
+    color: white;
+}
+.modal-body { margin: 20px 0; font-size: 16px; line-height: 1.5; }

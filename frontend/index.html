@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>东方札 (Touhouhanafuda)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- 登录大厅 (Lobby) -->
+        <div id="lobby-screen" class="screen glass-panel active">
+            <h1>东方札 Web版</h1>
+            <div id="login-section">
+                <input type="text" id="username-input" placeholder="输入昵称 (免注册)">
+                <button id="set-name-btn" class="btn primary-btn">进入大厅</button>
+            </div>
+            <div id="rooms-section" class="hidden">
+                <div class="lobby-header">
+                    <h2>欢迎, <span id="display-name"></span></h2>
+                    <button id="create-room-btn" class="btn success-btn">创建房间</button>
+                </div>
+                <div class="rooms-list-container">
+                    <h3>房间列表</h3>
+                    <div id="rooms-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 房间内部 (Room) -->
+        <div id="room-screen" class="screen glass-panel hidden">
+            <h2 id="room-title">房间: ----</h2>
+            <div class="players-container">
+                <div id="player-1" class="player-slot">等待中...</div>
+                <div id="player-2" class="player-slot">等待中...</div>
+            </div>
+            <div class="room-actions">
+                <button id="add-ai-btn" class="btn secondary-btn hidden">添加电脑</button>
+                <button id="start-game-btn" class="btn primary-btn hidden">开始游戏</button>
+                <button id="leave-room-btn" class="btn danger-btn">离开房间</button>
+            </div>
+        </div>
+
+        <!-- 游戏对战界面 (Game Board) -->
+        <div id="game-screen" class="screen full-screen hidden">
+            <!-- Row 1: 对手信息与得札 -->
+            <div class="desktop-row">
+                <div class="top-bar info-sidebar">
+                    <div class="info-content">
+                        <div id="opp-name">对手</div>
+                        <div id="opp-score"></div>
+                        <div class="info-item">手牌: <span id="opp-hand-count" style="color:var(--gold); font-weight:bold;">8</span></div>
+                    </div>
+                </div>
+                <div id="opp-collected" class="collected-area opp-collected">
+                    <!-- 动态生成分类柱 -->
+                </div>
+            </div>
+
+            <!-- Row 2: 场札 -->
+            <div class="field-area-wrapper">
+                <div id="field-cards" class="field-cards"></div>
+            </div>
+
+            <!-- Row 3: 我方信息与得札 -->
+            <div class="desktop-row">
+                <div class="bottom-bar info-sidebar">
+                    <div class="info-content">
+                        <div id="my-name">我</div>
+                        <div id="my-score"></div>
+                    </div>
+                </div>
+                <div id="my-collected" class="collected-area my-collected">
+                    <!-- 动态生成分类柱 -->
+                </div>
+            </div>
+
+            <!-- Row 4: 玩家手牌 -->
+            <div class="my-hand-container">
+                <div id="my-cards" class="fanned-cards my-cards"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏结算模态框 -->
+    <div id="game-over-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <h2 id="game-over-title">游戏结束</h2>
+            <div id="game-over-body" class="modal-body"></div>
+            <button id="return-to-room-btn" class="btn primary-btn" style="width: 100%;">返回等待室重新开始</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
