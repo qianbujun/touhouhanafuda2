@@ -7,7 +7,7 @@
 ## 游戏规则移步[东方札教程](./touhouhanafuda.md)
 
 ## 2.0版本 使用后端部署服务器 网页游玩的方式
-可在https://thfuda.panaolin.com/  游玩
+目前可在https://thfuda.panaolin.com/  直接游玩
 
 ## 交流群：1032161498
 
