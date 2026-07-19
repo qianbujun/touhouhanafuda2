@@ -14,7 +14,8 @@ body {
     background: linear-gradient(180deg, #443c33 0%, #2f2a24 100%);
     color: var(--text-light);
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     user-select: none;
 }
 
