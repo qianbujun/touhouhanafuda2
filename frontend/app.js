@@ -202,35 +202,85 @@ function renderGame(state) {
     state.my_player.hand.forEach((card, idx) => {
         let cardEl = createCardEl(card);
         cardEl.style.zIndex = 50 + idx;
+        
+        if (idx > 0) {
+            // compensate for 2px gap to get ~1/3 overlap
+            cardEl.style.marginLeft = '-19.6px'; 
+        }
 
-        // Hover hand card logic
-        cardEl.onmouseenter = () => {
-            cardEl.style.zIndex = 100;
-            // Highlight field cards
+        let hoverTimer = null;
+        let isSelected = false;
+
+        const setFieldHighlight = (show) => {
             Array.from(fieldCards.children).forEach((fNode, fIdx) => {
                 if(state.field[fIdx].card_id === card.card_id) {
-                    fNode.classList.add('highlight-match');
+                    if (show) fNode.classList.add('highlight-match');
+                    else fNode.classList.remove('highlight-match');
                 } else {
-                    fNode.classList.add('dimmed');
+                    if (show) fNode.classList.add('dimmed');
+                    else fNode.classList.remove('dimmed');
                 }
             });
         };
+
+        const setTopAndFloat = (show) => {
+            if (show) {
+                cardEl.style.zIndex = 100;
+                cardEl.style.transform = 'translateY(-15px)';
+            } else {
+                cardEl.style.zIndex = 50 + idx;
+                cardEl.style.transform = 'none';
+            }
+        };
+
+        // Immediately highlight fields on mouse enter
+        cardEl.onmouseenter = () => {
+            setFieldHighlight(true);
+            hoverTimer = setTimeout(() => {
+                if (!isSelected) {
+                    isSelected = true;
+                    setTopAndFloat(true);
+                }
+            }, 300);
+        };
+        
         cardEl.onmouseleave = () => {
-            cardEl.style.zIndex = 50 + idx;
-            Array.from(fieldCards.children).forEach(fNode => {
-                fNode.classList.remove('highlight-match');
-                fNode.classList.remove('dimmed');
-            });
+            if (hoverTimer) clearTimeout(hoverTimer);
+            isSelected = false;
+            setFieldHighlight(false);
+            setTopAndFloat(false);
         };
 
         if (state.state === 'WAITING_FOR_PLAY' && state.current_turn_sid === state.my_player.sid) {
             cardEl.onclick = () => {
-                cardEl.onmouseleave(); // Clear highlights
-                socket.emit('play_card', idx);
+                if (!isSelected) {
+                    if (hoverTimer) clearTimeout(hoverTimer);
+                    isSelected = true;
+                    setFieldHighlight(true);
+                    setTopAndFloat(true);
+                } else {
+                    isSelected = false;
+                    setFieldHighlight(false);
+                    setTopAndFloat(false);
+                    socket.emit('play_card', idx);
+                }
             };
         } else {
             cardEl.style.cursor = 'not-allowed';
             cardEl.style.filter = 'brightness(0.7)';
+            
+            cardEl.onclick = () => {
+                if (!isSelected) {
+                    if (hoverTimer) clearTimeout(hoverTimer);
+                    isSelected = true;
+                    setFieldHighlight(true);
+                    setTopAndFloat(true);
+                } else {
+                    isSelected = false;
+                    setFieldHighlight(false);
+                    setTopAndFloat(false);
+                }
+            };
         }
         myCards.appendChild(cardEl);
     });
